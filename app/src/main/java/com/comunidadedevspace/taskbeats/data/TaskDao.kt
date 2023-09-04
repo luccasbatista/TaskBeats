@@ -1,8 +1,7 @@
-package com.comunidadedevspace.taskbeats
+package com.comunidadedevspace.taskbeats.data
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
