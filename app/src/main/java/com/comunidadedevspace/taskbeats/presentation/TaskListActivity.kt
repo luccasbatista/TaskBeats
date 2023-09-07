@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.comunidadedevspace.taskbeats.R
+import com.comunidadedevspace.taskbeats.TaskBeatsApplication
 import com.comunidadedevspace.taskbeats.data.AppDataBase
 import com.comunidadedevspace.taskbeats.data.Task
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,13 +32,12 @@ class MainActivity : AppCompatActivity() {
         TaskListAdapter(::onListItemClicked)
     }
 
-    private val dataBase by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            AppDataBase::class.java, "taskbeats-database"
-        ).build()
-
+    private val viewModel: TaskListViewModel by lazy {
+        TaskListViewModel.create(application)
     }
+
+    private lateinit var dataBase: AppDataBase
+
     private val dao by lazy {
         dataBase.taskDao()
     }
@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
 
-        listFromDataBase()
         ctnContent = findViewById(R.id.ctn_content)
 
 
@@ -78,6 +77,11 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    override fun onStart(){
+        super.onStart()
+        dataBase = (application as TaskBeatsApplication).getAppDataBase()
+    }
+
     private fun insertIntoDataBase(task: Task) {
         CoroutineScope(IO).launch {
             dao.insert(task)
