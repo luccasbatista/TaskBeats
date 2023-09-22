@@ -1,7 +1,6 @@
 package com.comunidadedevspace.taskbeats.presentation
 
 import android.app.Activity
-import android.database.Observable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -13,16 +12,11 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.comunidadedevspace.taskbeats.R
-import com.comunidadedevspace.taskbeats.TaskBeatsApplication
-import com.comunidadedevspace.taskbeats.data.AppDataBase
 import com.comunidadedevspace.taskbeats.data.Task
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
+
 import java.io.Serializable
 
 
@@ -67,21 +61,23 @@ class TaskListActivity : AppCompatActivity() {
         }
 
     }
-    override fun onStart(){
+
+    override fun onStart() {
         super.onStart()
         listFromDataBase()
     }
 
-    private fun deleteAll(){
+    private fun deleteAll() {
         val taskAction = TaskAction(null, ActionType.DELETE_ALL.name)
         viewModel.execute(taskAction)
     }
-    private fun listFromDataBase(){
+
+    private fun listFromDataBase() {
         //Observer
         val listObserver = Observer<List<Task>> { listTasks ->
-            if (listTasks.isEmpty()){
+            if (listTasks.isEmpty()) {
                 ctnContent.visibility = View.VISIBLE
-            }else {
+            } else {
                 ctnContent.visibility = View.GONE
             }
             adapter.submitList(listTasks)
@@ -105,6 +101,7 @@ class TaskListActivity : AppCompatActivity() {
         val intent = TaskDetailActivity.start(this, task)
         startForResult.launch(intent)
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_task_list, menu)
@@ -112,11 +109,12 @@ class TaskListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId){
+        return when (item.itemId) {
             R.id.delete_all_task -> {
                 deleteAll()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

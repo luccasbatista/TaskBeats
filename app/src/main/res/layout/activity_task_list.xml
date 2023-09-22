@@ -35,13 +35,13 @@
         app:tint="@color/white"/>
 
     <LinearLayout
-        android:visibility="visible"
         android:id="@+id/ctn_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="24dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/rv_task_list"
         app:layout_constraintStart_toStartOf="@+id/rv_task_list"
@@ -62,7 +62,7 @@
         <ImageView
             android:layout_width="270dp"
             android:layout_height="364dp"
-            android:src="@drawable/img_empty_task"/>
+            android:src="@drawable/img_empty_task" />
     </LinearLayout>
 
 
