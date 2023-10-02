@@ -1,6 +1,5 @@
 package com.comunidadedevspace.taskbeats.presentation
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.comunidadedevspace.taskbeats.R
+import com.comunidadedevspace.taskbeats.TaskBeatsApplication
 import com.comunidadedevspace.taskbeats.data.Task
 import com.google.android.material.snackbar.Snackbar
 
@@ -20,6 +23,21 @@ class TaskDetailActivity : AppCompatActivity() {
     private var task: Task? = null
     private lateinit var btnDone: Button
 
+    val dataBaseInstance by lazy {
+        (application as TaskBeatsApplication).getAppDataBase()
+    }
+    val dao by lazy {dataBaseInstance.taskDao()}
+
+    private val factory = object : ViewModelProvider.Factory{
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return TaskDetailViewModel(dao) as T
+        }
+
+    }
+    private val viewModel: TaskDetailViewModel by viewModels {
+        TaskDetailViewModel.getVMFactory(application)
+    }
     companion object{
         private const val TASK_DETAIL_EXTRA = "task.extra.detail"
 
@@ -74,7 +92,7 @@ class TaskDetailActivity : AppCompatActivity() {
         actionType: ActionType
     ){
         val newTask = Task(id, title, description)
-        returnAction(newTask, actionType)
+        perfomAction(newTask, actionType)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -89,7 +107,7 @@ class TaskDetailActivity : AppCompatActivity() {
             R.id.delete_task -> {
 
                 if(task != null){
-                    returnAction(task!!, ActionType.DELETE)
+                    perfomAction(task!!, ActionType.DELETE)
                 }else {
                     showMessage(btnDone, "Task not found")
 
@@ -100,13 +118,9 @@ class TaskDetailActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-    private fun returnAction(task: Task, actionType: ActionType){
-        val intent = Intent()
-            .apply {
-                val taskAction = TaskAction(task, actionType.name)
-                putExtra(TASK_ACTION_RESULT, taskAction)
-            }
-        setResult(Activity.RESULT_OK, intent)
+    private fun perfomAction(task: Task, actionType: ActionType){
+        val taskAction = TaskAction(task, actionType.name)
+        viewModel.execute(taskAction)
         finish()
     }
 
