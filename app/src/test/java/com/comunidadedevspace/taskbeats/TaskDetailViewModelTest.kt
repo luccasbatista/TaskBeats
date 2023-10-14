@@ -9,20 +9,21 @@ import com.comunidadedevspace.taskbeats.presentation.TaskListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
 class TaskDetailViewModelTest {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val taskDao: TaskDao = mock()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val underTest: TaskDetailViewModel by lazy {
-        TaskDetailViewModel(
-            taskDao,
-            UnconfinedTestDispatcher()
-        )
+        TaskDetailViewModel(taskDao)
     }
     @Test
     fun update_task() = runTest {

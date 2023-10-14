@@ -7,15 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.comunidadedevspace.taskbeats.TaskBeatsApplication
 import com.comunidadedevspace.taskbeats.data.Task
 import com.comunidadedevspace.taskbeats.data.TaskDao
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TaskDetailViewModel (
-    private val taskDao: TaskDao,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ViewModel() {
-
+class TaskDetailViewModel (private val taskDao: TaskDao) : ViewModel() {
     fun execute(taskAction: TaskAction) {
         when (taskAction.actionType) {
             ActionType.DELETE.name -> deleteById(taskAction.task!!.id)
@@ -25,19 +19,19 @@ class TaskDetailViewModel (
     }
 
     private fun deleteById(id: Int) {
-        viewModelScope.launch(dispatcher){
+        viewModelScope.launch{
             taskDao.deleteById(id)
         }
     }
 
     private fun insertIntoDataBase(task: Task) {
-        viewModelScope.launch(dispatcher){
+        viewModelScope.launch{
             taskDao.insert(task)
         }
     }
 
     private fun updateIntoDataBase(task: Task) {
-        viewModelScope.launch(dispatcher){
+        viewModelScope.launch{
             taskDao.update(task)
         }
     }

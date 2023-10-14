@@ -12,19 +12,19 @@ import androidx.room.Update
 interface TaskDao {
 
     @Insert(onConflict = REPLACE)
-    fun insert(task: Task)
+    suspend fun insert(task: Task)
 
     @Query("Select * from task")
     fun getAll(): LiveData<List<Task>>
 
     @Update(onConflict = REPLACE)
-    fun update(task: Task)
+    suspend fun update(task: Task)
 
     @Query("Delete from task")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("Delete from task WHERE id=:id")
-    fun deleteById(id: Int)
+    suspend fun deleteById(id: Int)
 
 
 
