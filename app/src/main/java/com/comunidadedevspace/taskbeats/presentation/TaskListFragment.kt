@@ -9,7 +9,13 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.comunidadedevspace.taskbeats.R
-import com.comunidadedevspace.taskbeats.data.Task
+import com.comunidadedevspace.taskbeats.data.local.Task
+import com.comunidadedevspace.taskbeats.data.remote.NewsResponse
+import com.comunidadedevspace.taskbeats.data.remote.NewsService
+import com.comunidadedevspace.taskbeats.data.remote.RetrofitModule
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +25,8 @@ import com.comunidadedevspace.taskbeats.data.Task
 class TaskListFragment : Fragment() {
 
     private lateinit var ctnContent: LinearLayout
+
+    private val retrofitModule = RetrofitModule
 
     private val adapter: TaskListAdapter by lazy {
         TaskListAdapter(::openTaskListDetail)
@@ -41,6 +49,29 @@ class TaskListFragment : Fragment() {
 
         val rvTasks: RecyclerView = view.findViewById(R.id.rv_task_list)
         rvTasks.adapter = adapter
+
+        val newsService = retrofitModule.createNewsService()
+
+        newsService
+            .fetchNews()
+            .enqueue(
+                object : Callback<NewsResponse>{
+                    override fun onResponse(
+                        call: Call<NewsResponse>,
+                        response: Response<NewsResponse>
+                    ) {
+                        if(response.isSuccessful){
+                            val newsResponse = response.body()!!
+
+                            val newsList = newsResponse.data
+                            println(newsList)
+                        }
+                    }
+                    override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                        t.printStackTrace()
+                    }
+                }
+            )
     }
 
     override fun onStart() {
