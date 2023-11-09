@@ -49,29 +49,6 @@ class TaskListFragment : Fragment() {
 
         val rvTasks: RecyclerView = view.findViewById(R.id.rv_task_list)
         rvTasks.adapter = adapter
-
-        val newsService = retrofitModule.createNewsService()
-
-        newsService
-            .fetchNews()
-            .enqueue(
-                object : Callback<NewsResponse>{
-                    override fun onResponse(
-                        call: Call<NewsResponse>,
-                        response: Response<NewsResponse>
-                    ) {
-                        if(response.isSuccessful){
-                            val newsResponse = response.body()!!
-
-                            val newsList = newsResponse.data
-                            println(newsList)
-                        }
-                    }
-                    override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
-                        t.printStackTrace()
-                    }
-                }
-            )
     }
 
     override fun onStart() {
